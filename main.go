@@ -46,6 +46,7 @@ func main() {
 	file, err := ioutil.ReadFile(os.Args[1])
 	if err != nil {
 		log.Printf("File read err: %v\n", err)
+		return
 	}
 
 	var bmark Bookmark
