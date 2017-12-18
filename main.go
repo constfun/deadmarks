@@ -7,6 +7,7 @@ import (
 	"os"
 	"fmt"
 	"strings"
+	"net/http"
 )
 
 type Bookmark struct {
@@ -30,6 +31,17 @@ func (b Bookmark) CollectUris(uris *map[string]bool) {
 	}
 }
 
+func TestUri(uri string) bool {
+	resp, err := http.Get(uri)
+	if err != nil {
+		return false
+	}
+	if resp.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
 func main() {
 	file, err := ioutil.ReadFile(os.Args[1])
 	if err != nil {
@@ -47,6 +59,11 @@ func main() {
 	bmark.CollectUris(&uris)
 
 	for uri := range uris {
-		fmt.Printf("OK: %v\n", uri)
+		res := TestUri(uri)
+		if res {
+			fmt.Printf("OK: %v\n", uri)
+		} else {
+			fmt.Printf("DOWN: %v\n", uri)
+		}
 	}
 }
